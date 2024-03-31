@@ -10,6 +10,8 @@ import (
 	"github.com/traefik/traefik/v2/pkg/log"
 	"github.com/traefik/yaegi/interp"
 	"github.com/traefik/yaegi/stdlib"
+	"github.com/traefik/yaegi/stdlib/unsafe"
+	"github.com/traefik/yaegi/stdlib/syscall"
 )
 
 // Constructor creates a plugin handler.
@@ -95,6 +97,9 @@ func NewBuilder(client *Client, plugins map[string]Descriptor, localPlugins map[
 		if err != nil {
 			return nil, fmt.Errorf("%s: failed to load symbols: %w", desc.ModuleName, err)
 		}
+
+		i.Use(unsafe.Symbols)
+		i.Use(syscall.Symbols)
 
 		err = i.Use(ppSymbols())
 		if err != nil {
